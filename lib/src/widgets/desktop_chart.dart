@@ -1,6 +1,7 @@
 import 'dart:math';
-import 'package:candlesticks/src/main.dart';
+
 import 'package:candlesticks/src/constant/view_constants.dart';
+import 'package:candlesticks/src/main.dart';
 import 'package:candlesticks/src/models/candle_sticks_style.dart';
 import 'package:candlesticks/src/models/main_window_indicator.dart';
 import 'package:candlesticks/src/utils/helper_functions.dart';
@@ -12,6 +13,7 @@ import 'package:candlesticks/src/widgets/top_panel.dart';
 import 'package:candlesticks/src/widgets/volume_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import '../models/candle.dart';
 import 'dash_line.dart';
 
@@ -229,6 +231,7 @@ class _DesktopChartState extends State<DesktopChart> {
                                             child: Stack(
                                               children: [
                                                 MainWindowIndicatorWidget(
+                                                  candles: widget.candles,
                                                   indicatorDatas: widget
                                                       .mainWindowDataContainer
                                                       .indicatorComponentData,
@@ -467,7 +470,8 @@ class _DesktopChartState extends State<DesktopChart> {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.zero,
-                            primary: widget.style.hoverIndicatorBackgroundColor,
+                            foregroundColor:
+                                widget.style.hoverIndicatorBackgroundColor,
                           ),
                           child: Text(
                             "Auto",

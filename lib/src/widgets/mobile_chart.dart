@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:candlesticks/candlesticks.dart';
 import 'package:candlesticks/src/constant/view_constants.dart';
 import 'package:candlesticks/src/models/main_window_indicator.dart';
@@ -10,6 +11,7 @@ import 'package:candlesticks/src/widgets/time_row.dart';
 import 'package:candlesticks/src/widgets/top_panel.dart';
 import 'package:candlesticks/src/widgets/volume_widget.dart';
 import 'package:flutter/material.dart';
+
 import 'dash_line.dart';
 
 /// This widget manages gestures
@@ -216,6 +218,7 @@ class _MobileChartState extends State<MobileChart> {
                                             child: Stack(
                                               children: [
                                                 MainWindowIndicatorWidget(
+                                                  candles: widget.candles,
                                                   indicatorDatas: widget
                                                       .mainWindowDataContainer
                                                       .indicatorComponentData,
@@ -449,7 +452,8 @@ class _MobileChartState extends State<MobileChart> {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.zero,
-                            primary: widget.style.hoverIndicatorBackgroundColor,
+                            foregroundColor:
+                                widget.style.hoverIndicatorBackgroundColor,
                           ),
                           child: Text(
                             "Auto",
