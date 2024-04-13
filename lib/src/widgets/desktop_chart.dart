@@ -15,6 +15,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../models/candle.dart';
+import '../models/line_drawing.dart';
 import 'dash_line.dart';
 
 /// This widget manages gestures
@@ -46,6 +47,7 @@ class DesktopChart extends StatefulWidget {
   final ChartAdjust chartAdjust;
 
   final CandleSticksStyle style;
+  final List<LineDrawing> drawing;
 
   final void Function(double) onPanDown;
   final void Function() onPanEnd;
@@ -70,6 +72,7 @@ class DesktopChart extends StatefulWidget {
     required this.mainWindowDataContainer,
     required this.onRemoveIndicator,
     required this.style,
+    this.drawing = const [],
   });
 
   @override
@@ -184,87 +187,93 @@ class _DesktopChartState extends State<DesktopChart> {
                         children: [
                           Expanded(
                             flex: 3,
-                            child: Stack(
-                              children: [
-                                PriceColumn(
-                                  style: widget.style,
-                                  low: candlesLowPrice,
-                                  high: candlesHighPrice,
-                                  width: constraints.maxWidth,
-                                  chartHeight: chartHeight,
-                                  lastCandle: widget.candles[
-                                      widget.index < 0 ? 0 : widget.index],
-                                  onScale: (delta) {
-                                    if (manualScaleHigh == null) {
-                                      manualScaleHigh = candlesHighPrice;
-                                      manualScaleLow = candlesLowPrice;
-                                    }
-                                    setState(() {
-                                      double deltaPrice = delta /
-                                          chartHeight *
-                                          (manualScaleHigh! - manualScaleLow!);
-                                      manualScaleHigh =
-                                          manualScaleHigh! + deltaPrice;
-                                      manualScaleLow =
-                                          manualScaleLow! - deltaPrice;
-                                    });
-                                  },
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            right: BorderSide(
-                                              color: widget.style.borderColor,
-                                              width: 1,
+                            child: ClipRect(
+                              child: Stack(
+                                children: [
+                                  PriceColumn(
+                                    style: widget.style,
+                                    low: candlesLowPrice,
+                                    high: candlesHighPrice,
+                                    width: constraints.maxWidth,
+                                    chartHeight: chartHeight,
+                                    lastCandle: widget.candles[
+                                        widget.index < 0 ? 0 : widget.index],
+                                    onScale: (delta) {
+                                      if (manualScaleHigh == null) {
+                                        manualScaleHigh = candlesHighPrice;
+                                        manualScaleLow = candlesLowPrice;
+                                      }
+                                      setState(() {
+                                        double deltaPrice = delta /
+                                            chartHeight *
+                                            (manualScaleHigh! -
+                                                manualScaleLow!);
+                                        manualScaleHigh =
+                                            manualScaleHigh! + deltaPrice;
+                                        manualScaleLow =
+                                            manualScaleLow! - deltaPrice;
+                                      });
+                                    },
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          clipBehavior: Clip.hardEdge,
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              right: BorderSide(
+                                                color: widget.style.borderColor,
+                                                width: 1,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        child: AnimatedPadding(
-                                          duration: Duration(milliseconds: 300),
-                                          padding: EdgeInsets.symmetric(
-                                              vertical:
-                                                  MAIN_CHART_VERTICAL_PADDING),
-                                          child: RepaintBoundary(
-                                            child: Stack(
-                                              children: [
-                                                MainWindowIndicatorWidget(
-                                                  candles: widget.candles,
-                                                  indicatorDatas: widget
-                                                      .mainWindowDataContainer
-                                                      .indicatorComponentData,
-                                                  index: widget.index,
-                                                  candleWidth:
-                                                      widget.candleWidth,
-                                                  low: low,
-                                                  high: high,
-                                                ),
-                                                CandleStickWidget(
-                                                  candles: widget.candles,
-                                                  candleWidth:
-                                                      widget.candleWidth,
-                                                  index: widget.index,
-                                                  high: high,
-                                                  low: low,
-                                                  bearColor:
-                                                      widget.style.primaryBear,
-                                                  bullColor:
-                                                      widget.style.primaryBull,
-                                                ),
-                                              ],
+                                          child: AnimatedPadding(
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical:
+                                                    MAIN_CHART_VERTICAL_PADDING),
+                                            child: RepaintBoundary(
+                                              child: Stack(
+                                                children: [
+                                                  CandleStickWidget(
+                                                    candles: widget.candles,
+                                                    candleWidth:
+                                                        widget.candleWidth,
+                                                    index: widget.index,
+                                                    high: high,
+                                                    low: low,
+                                                    bearColor: widget
+                                                        .style.primaryBear,
+                                                    bullColor: widget
+                                                        .style.primaryBull,
+                                                  ),
+                                                  MainWindowIndicatorWidget(
+                                                    candles: widget.candles,
+                                                    indicatorDatas: widget
+                                                        .mainWindowDataContainer
+                                                        .indicatorComponentData,
+                                                    drawing: widget.drawing,
+                                                    index: widget.index,
+                                                    candleWidth:
+                                                        widget.candleWidth,
+                                                    low: low,
+                                                    high: high,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: PRICE_BAR_WIDTH,
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      SizedBox(
+                                        width: PRICE_BAR_WIDTH,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           Expanded(

@@ -31,28 +31,28 @@ class CandleInfoText extends StatelessWidget {
         text: dateFormatter(candle.date),
         style: defaultStyle,
         children: <TextSpan>[
-          TextSpan(text: " O:"),
+          TextSpan(text: " O: "),
           TextSpan(
             text: HelperFunctions.priceToString(candle.open),
             style: TextStyle(
               color: candle.isBull ? bullColor : bearColor,
             ),
           ),
-          TextSpan(text: " H:"),
+          TextSpan(text: " H: "),
           TextSpan(
             text: HelperFunctions.priceToString(candle.high),
             style: TextStyle(
               color: candle.isBull ? bullColor : bearColor,
             ),
           ),
-          TextSpan(text: " L:"),
+          TextSpan(text: " L: "),
           TextSpan(
             text: HelperFunctions.priceToString(candle.low),
             style: TextStyle(
               color: candle.isBull ? bullColor : bearColor,
             ),
           ),
-          TextSpan(text: " C:"),
+          TextSpan(text: " C: "),
           TextSpan(
             text: HelperFunctions.priceToString(candle.close),
             style: TextStyle(

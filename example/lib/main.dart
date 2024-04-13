@@ -58,6 +58,33 @@ class _MyAppState extends State<MyApp> {
     ),
   ];
 
+  List<LineDrawing> lines = [
+    LineDrawing(
+        leftX: DateTime(2024, 4, 13, 20, 00, 00),
+        rightX: DateTime(2024, 4, 13, 21, 00, 00),
+        leftY: 0.0485501,
+        rightY: 0.0485501,
+        lineRange: LineRange.leftOpen,
+        lineStyle: LineStyle.solid,
+        lineWidth: 0.5,
+        text: "1차"),
+    LineDrawing(
+        leftX: DateTime(2024, 4, 14, 1, 00, 00),
+        rightX: DateTime(2024, 4, 14, 2, 00, 00),
+        leftY: 0.0481701,
+        rightY: 0.0481701,
+        lineRange: LineRange.rightOpen,
+        lineStyle: LineStyle.solid,
+        lineWidth: 0.5,
+        text: "2차"),
+  ];
+
+  void updateDrawing(List<LineDrawing> newDrawing) {
+    setState(() {
+      lines = newDrawing;
+    });
+  }
+
   @override
   void initState() {
     fetchSymbols().then((value) {
@@ -196,6 +223,7 @@ class _MyAppState extends State<MyApp> {
                         .removeWhere((element) => element.name == indicator);
                   });
                 },
+                drawing: lines,
                 actions: [
                   ToolBarAction(
                     onPressed: () {

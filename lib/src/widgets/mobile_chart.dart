@@ -45,6 +45,7 @@ class MobileChart extends StatefulWidget {
   final ChartAdjust chartAdjust;
 
   final CandleSticksStyle style;
+  final List<LineDrawing> drawing;
 
   final void Function(double) onPanDown;
   final void Function() onPanEnd;
@@ -66,6 +67,7 @@ class MobileChart extends StatefulWidget {
     required this.onReachEnd,
     required this.mainWindowDataContainer,
     required this.onRemoveIndicator,
+    this.drawing = const [],
   });
 
   @override
@@ -217,17 +219,6 @@ class _MobileChartState extends State<MobileChart> {
                                           child: RepaintBoundary(
                                             child: Stack(
                                               children: [
-                                                MainWindowIndicatorWidget(
-                                                  candles: widget.candles,
-                                                  indicatorDatas: widget
-                                                      .mainWindowDataContainer
-                                                      .indicatorComponentData,
-                                                  index: widget.index,
-                                                  candleWidth:
-                                                      widget.candleWidth,
-                                                  low: low,
-                                                  high: high,
-                                                ),
                                                 CandleStickWidget(
                                                   candles: widget.candles,
                                                   candleWidth:
@@ -239,6 +230,18 @@ class _MobileChartState extends State<MobileChart> {
                                                       widget.style.primaryBear,
                                                   bullColor:
                                                       widget.style.primaryBull,
+                                                ),
+                                                MainWindowIndicatorWidget(
+                                                  candles: widget.candles,
+                                                  indicatorDatas: widget
+                                                      .mainWindowDataContainer
+                                                      .indicatorComponentData,
+                                                  drawing: widget.drawing,
+                                                  index: widget.index,
+                                                  candleWidth:
+                                                      widget.candleWidth,
+                                                  low: low,
+                                                  high: high,
                                                 ),
                                               ],
                                             ),

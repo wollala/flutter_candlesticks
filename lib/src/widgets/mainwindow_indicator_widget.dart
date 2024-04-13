@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:candlesticks/src/models/main_window_indicator.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,7 @@ class MainWindowIndicatorWidget extends LeafRenderObjectWidget {
   final double candleWidth;
   final double high;
   final double low;
+  final List<LineDrawing> drawing;
 
   MainWindowIndicatorWidget({
     required this.candles,
@@ -18,6 +21,7 @@ class MainWindowIndicatorWidget extends LeafRenderObjectWidget {
     required this.candleWidth,
     required this.low,
     required this.high,
+    required this.drawing,
   });
 
   @override
@@ -29,6 +33,7 @@ class MainWindowIndicatorWidget extends LeafRenderObjectWidget {
       candleWidth,
       low,
       high,
+      drawing,
     );
   }
 
@@ -51,6 +56,7 @@ class MainWindowIndicatorWidget extends LeafRenderObjectWidget {
 
 class MainWindowIndicatorRenderObject extends RenderBox {
   late List<Candle> _candles;
+  late List<LineDrawing> _drawing;
   late List<IndicatorComponentData> _indicatorDatas;
   late int _index;
   late double _candleWidth;
@@ -64,6 +70,7 @@ class MainWindowIndicatorRenderObject extends RenderBox {
     double candleWidth,
     double low,
     double high,
+    List<LineDrawing> drawing,
   ) {
     _candles = candles;
     _indicatorDatas = indicatorDatas;
@@ -71,6 +78,7 @@ class MainWindowIndicatorRenderObject extends RenderBox {
     _candleWidth = candleWidth;
     _low = low;
     _high = high;
+    _drawing = drawing;
   }
 
   /// set size as large as possible
@@ -111,82 +119,201 @@ class MainWindowIndicatorRenderObject extends RenderBox {
               ..style = PaintingStyle.stroke);
     });
 
-    double targetPrice = 0.05048;
-    DateTime targetTime = DateTime(2024, 4, 11, 23, 33, 00);
-    Duration? interval;
-    DateTime? startTime;
-    DateTime? endTime;
-    for (int i = 0; (i + 1) * _candleWidth < size.width; i++) {
-      if (i + _index >= _candles.length || i + _index < 0) continue;
+    for (LineDrawing lineDrawing in _drawing) {
+      int startCandleIndex = _candles
+          .indexWhere((element) => element.isContain(lineDrawing.leftX));
+      int endCandleIndex = _candles
+          .indexWhere((element) => element.isContain(lineDrawing.rightX));
 
-      var curCandle = _candles[i + _index];
-      var nextCandle = _candles[i + _index + 1];
+      var xlast = size.width +
+          offset.dx -
+          (endCandleIndex - _index + 0.5) * _candleWidth;
+      var xfirst = size.width +
+          offset.dx -
+          (startCandleIndex - _index + 0.5) * _candleWidth;
 
-      if (interval == null)
-        interval = curCandle.date.difference(nextCandle.date);
-      startTime = curCandle.date;
-      endTime = curCandle.date.add(interval);
+      var ylast = offset.dy + (_high - lineDrawing.rightY) / range;
+      var yfirst = offset.dy + (_high - lineDrawing.leftY) / range;
 
-      if (targetTime.isAfter(startTime) && targetTime.isBefore(endTime) ||
-          targetTime.isAtSameMomentAs(startTime) ||
-          targetTime.isAfter(_candles[_index].date)) {
-        //targetTime.isAfter(_candles[_index].date) 이 상황부터 중복으로 그려짐. 중복 painting 제거하기
-        double startX = 0;
-        double endX = size.width + offset.dx - i * _candleWidth;
+      var dx = xlast - xfirst;
+      var dy = ylast - yfirst;
 
-        double startY = offset.dy + (_high - targetPrice) / range;
-        double endY = startY;
+      var alpha = dy / dx;
+      var beta = yfirst - alpha * xfirst;
 
-        Offset start = Offset(startX, startY);
-        Offset end = Offset(endX, endY);
+      late Offset open;
+      late Offset close;
+      switch (lineDrawing.lineRange) {
+        case LineRange.open:
+          open = Offset(
+            offset.dx,
+            (alpha * offset.dx + beta),
+          );
 
-        // 선 그리기
-        context.canvas.drawLine(
-          start,
-          end,
-          Paint()
-            ..color = Colors.black
-            ..strokeWidth = 1
-            ..style = PaintingStyle.stroke,
-        );
-
-        // 텍스트 설정
-        final text = '1차 $targetPrice';
-        final textStyle = TextStyle(color: Colors.black, fontSize: 12);
-        final textSpan = TextSpan(text: text, style: textStyle);
-        final textPainter =
-            TextPainter(text: textSpan, textDirection: TextDirection.ltr);
-        textPainter.layout(minWidth: 0, maxWidth: size.width);
-
-        // 텍스트가 들어갈 사각형의 위치와 크기 설정
-        final textOffset =
-            Offset(start.dx + 6, end.dy - textPainter.height / 2);
-        final rect = Rect.fromLTWH(textOffset.dx - 4, textOffset.dy - 1,
-            textPainter.width + 8, textPainter.height + 2);
-
-        // 사각형 그리기
-        context.canvas.drawRect(
-          rect,
-          Paint()
-            ..color = Colors.white
-            ..style = PaintingStyle.fill,
-        ); // 사각형 내부 채우기
-        context.canvas.drawRect(
-          rect,
-          Paint()
-            ..color = Colors.black
-            ..strokeWidth = 1.0
-            ..style = PaintingStyle.stroke,
-        ); // 사각형 테두리
-
-        // 텍스트 그리기
-        textPainter.paint(
-          context.canvas,
-          textOffset,
-        );
+          close = Offset(
+            offset.dx + size.width,
+            (alpha * (offset.dx + size.width) + beta),
+          );
+          break;
+        case LineRange.close:
+          open = Offset(
+            xfirst,
+            yfirst,
+          );
+          close = Offset(
+            xlast,
+            ylast,
+          );
+          break;
+        case LineRange.leftOpen:
+          open = Offset(
+            offset.dx,
+            (alpha * offset.dx + beta),
+          );
+          close = Offset(
+            xlast,
+            ylast,
+          );
+          break;
+        case LineRange.rightOpen:
+          open = Offset(
+            xfirst,
+            yfirst,
+          );
+          close = Offset(
+            offset.dx + size.width,
+            (alpha * (offset.dx + size.width) + beta),
+          );
+          break;
       }
-      context.canvas.save();
-      context.canvas.restore();
+      switch (lineDrawing.lineStyle) {
+        case LineStyle.solid:
+          context.canvas.drawLine(
+              open,
+              close,
+              Paint()
+                ..color = lineDrawing.lineColor
+                ..strokeWidth = lineDrawing.lineWidth!
+                ..style = PaintingStyle.stroke);
+          break;
+        case LineStyle.dotted:
+          context.canvas.drawDashLine(
+              open,
+              close,
+              Paint()
+                ..color = lineDrawing.lineColor
+                ..strokeWidth = lineDrawing.lineWidth!
+                ..style = PaintingStyle.stroke,
+              width: lineDrawing.lineWidth,
+              space: lineDrawing.lineWidth);
+          break;
+        case LineStyle.dashed:
+          context.canvas.drawDashLine(
+              open,
+              close,
+              Paint()
+                ..color = lineDrawing.lineColor
+                ..strokeWidth = lineDrawing.lineWidth!
+                ..style = PaintingStyle.stroke,
+              width: 15,
+              space: 10);
+          break;
+      }
+
+      // 텍스트 설정
+      final textSpan = TextSpan(
+        text: '${lineDrawing.text} ${lineDrawing.rightY}',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 12,
+        ),
+      );
+
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+
+      // 텍스트가 들어갈 사각형의 위치와 크기 설정
+      late double horizontalOffset;
+      switch (lineDrawing.lineRange) {
+        case LineRange.open:
+          horizontalOffset = size.width - textPainter.width - 2;
+          break;
+        case LineRange.close:
+          horizontalOffset = size.width - textPainter.width - 2;
+          break;
+        case LineRange.leftOpen:
+          horizontalOffset = 2;
+          break;
+        case LineRange.rightOpen:
+          horizontalOffset = size.width - textPainter.width - 2;
+          break;
+      }
+
+      final textOffset =
+          Offset(horizontalOffset, ylast - textPainter.height / 2);
+      final rect = Rect.fromLTWH(textOffset.dx - 2, textOffset.dy,
+          textPainter.width + 4, textPainter.height);
+
+      // 사각형 그리기
+      context.canvas.drawRect(
+        rect,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill,
+      ); // 사각형 내부 채우기
+      context.canvas.drawRect(
+        rect,
+        Paint()
+          ..color = Colors.black
+          ..strokeWidth = 1.0
+          ..style = PaintingStyle.stroke,
+      ); // 사각형 테두리
+
+      // 텍스트 그리기
+      textPainter.paint(
+        context.canvas,
+        textOffset,
+      );
+      continue;
     }
+    context.canvas.save();
+    context.canvas.restore();
+  }
+}
+
+extension CustomLine on Canvas {
+  drawDashLine(
+    Offset offset1,
+    Offset offset2,
+    Paint paint, {
+    double? width,
+    double? space,
+  }) {
+    var distance = offset1.distanceTo(offset2);
+    var dashWidth = width ?? 20.0;
+    var dashSpace = space ?? 20.0;
+    var dashCount = (distance / (dashWidth + dashSpace)).floor();
+    for (var i = 0; i < dashCount; i++) {
+      var startX = offset1.dx + ((offset2.dx - offset1.dx) / dashCount) * i;
+      var startY = offset1.dy + ((offset2.dy - offset1.dy) / dashCount) * i;
+      var endX = startX + (offset2.dx - offset1.dx) * (dashWidth / distance);
+      var endY = startY + (offset2.dy - offset1.dy) * (dashWidth / distance);
+
+      drawLine(Offset(startX, startY), Offset(endX, endY), paint);
+    }
+  }
+}
+
+extension OffsetDis on Offset {
+  distanceTo(Offset other) {
+    var dx = other.dx - this.dx;
+    var dy = other.dy - this.dy;
+    return math.sqrt(dx * dx + dy * dy);
   }
 }

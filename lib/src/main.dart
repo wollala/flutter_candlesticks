@@ -1,12 +1,15 @@
+import 'dart:io' show Platform;
 import 'dart:math';
+
 import 'package:candlesticks/candlesticks.dart';
 import 'package:candlesticks/src/models/main_window_indicator.dart';
-import 'package:candlesticks/src/widgets/mobile_chart.dart';
 import 'package:candlesticks/src/widgets/desktop_chart.dart';
+import 'package:candlesticks/src/widgets/mobile_chart.dart';
 import 'package:candlesticks/src/widgets/toolbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:io' show Platform;
+
+import 'models/line_drawing.dart';
 
 enum ChartAdjust {
   /// Will adjust chart size by max and min value from visible area
@@ -43,7 +46,7 @@ class Candlesticks extends StatefulWidget {
 
   /// Custom loading widget
   final Widget? loadingWidget;
-
+  final List<LineDrawing> drawing;
   final CandleSticksStyle? style;
 
   const Candlesticks({
@@ -56,6 +59,7 @@ class Candlesticks extends StatefulWidget {
     this.loadingWidget,
     this.indicators,
     this.onRemoveIndicator,
+    this.drawing = const [],
     this.style,
   })  : assert(candles.length == 0 || candles.length > 1,
             "Please provide at least 2 candles"),
@@ -192,6 +196,7 @@ class _CandlesticksState extends State<Candlesticks> {
                     style: style,
                     onRemoveIndicator: widget.onRemoveIndicator,
                     mainWindowDataContainer: mainWindowDataContainer!,
+                    drawing: widget.drawing,
                     chartAdjust: widget.chartAdjust,
                     onScaleUpdate: (double scale) {
                       scale = max(0.90, scale);
