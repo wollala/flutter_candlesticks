@@ -1,9 +1,11 @@
 import 'dart:convert';
+
+import 'package:candlesticks/candlesticks.dart';
+import 'package:flutter/material.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
 import './candle_ticker_model.dart';
 import './repository.dart';
-import 'package:flutter/material.dart';
-import 'package:candlesticks/candlesticks.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +57,33 @@ class _MyAppState extends State<MyApp> {
       color: Colors.green.shade600,
     ),
   ];
+
+  List<LineDrawing> lines = [
+    LineDrawing(
+        leftX: DateTime(2024, 4, 13, 20, 00, 00),
+        rightX: DateTime(2024, 4, 13, 21, 00, 00),
+        leftY: 0.0485501,
+        rightY: 0.0485501,
+        lineRange: LineRange.leftOpen,
+        lineStyle: LineStyle.solid,
+        lineWidth: 0.5,
+        text: "1차"),
+    LineDrawing(
+        leftX: DateTime(2024, 4, 14, 1, 00, 00),
+        rightX: DateTime(2024, 4, 14, 2, 00, 00),
+        leftY: 0.0481701,
+        rightY: 0.0481701,
+        lineRange: LineRange.rightOpen,
+        lineStyle: LineStyle.solid,
+        lineWidth: 0.5,
+        text: "2차"),
+  ];
+
+  void updateDrawing(List<LineDrawing> newDrawing) {
+    setState(() {
+      lines = newDrawing;
+    });
+  }
 
   @override
   void initState() {
@@ -194,6 +223,7 @@ class _MyAppState extends State<MyApp> {
                         .removeWhere((element) => element.name == indicator);
                   });
                 },
+                drawing: lines,
                 actions: [
                   ToolBarAction(
                     onPressed: () {
@@ -202,15 +232,15 @@ class _MyAppState extends State<MyApp> {
                         builder: (context) {
                           return Center(
                             child: Container(
-                              width: 200,
-                              color: Theme.of(context).backgroundColor,
+                              width: 198,
+                              color: Theme.of(context).colorScheme.background,
                               child: Wrap(
                                 children: intervals
                                     .map((e) => Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding: const EdgeInsets.all(3.0),
                                           child: SizedBox(
-                                            width: 50,
-                                            height: 30,
+                                            width: 60,
+                                            height: 32,
                                             child: RawMaterialButton(
                                               elevation: 0,
                                               fillColor:
@@ -292,7 +322,7 @@ class _SymbolSearchModalState extends State<SymbolsSearchModal> {
         child: Container(
           width: 300,
           height: MediaQuery.of(context).size.height * 0.75,
-          color: Theme.of(context).backgroundColor.withOpacity(0.5),
+          color: Theme.of(context).colorScheme.background.withOpacity(0.5),
           child: Column(
             children: [
               Padding(
@@ -312,7 +342,7 @@ class _SymbolSearchModalState extends State<SymbolsSearchModal> {
                           .toLowerCase()
                           .contains(symbolSearch.toLowerCase()))
                       .map((e) => Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(3.0),
                             child: SizedBox(
                               width: 50,
                               height: 30,

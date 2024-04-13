@@ -52,4 +52,41 @@ class HelperFunctions {
     if (5 * base > minStepSize) return 5 * base;
     return 10 * base;
   }
+
+  static Duration getIntervalDuration(String interval) {
+    switch (interval) {
+      case '1m':
+        return Duration(minutes: 1);
+      case '3m':
+        return Duration(minutes: 3);
+      case '5m':
+        return Duration(minutes: 5);
+      case '15m':
+        return Duration(minutes: 15);
+      case '30m':
+        return Duration(minutes: 30);
+      case '1h':
+        return Duration(hours: 1);
+      case '2h':
+        return Duration(hours: 2);
+      case '4h':
+        return Duration(hours: 4);
+      case '6h':
+        return Duration(hours: 6);
+      case '8h':
+        return Duration(hours: 8);
+      case '12h':
+        return Duration(hours: 12);
+      case '1d':
+        return Duration(days: 1);
+      case '3d':
+        return Duration(days: 3);
+      case '1w':
+        return Duration(days: 7);
+      case '1M':
+        return Duration(days: 30);
+      default:
+        return Duration(minutes: 1);
+    }
+  }
 }

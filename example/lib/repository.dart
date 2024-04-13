@@ -12,7 +12,7 @@ class BinanceRepository {
             (endTime != null ? "&endTime=$endTime" : ""));
     final res = await http.get(uri);
     return (jsonDecode(res.body) as List<dynamic>)
-        .map((e) => Candle.fromJson(e))
+        .map((e) => Candle.fromJson(e, interval))
         .toList()
         .reversed
         .toList();

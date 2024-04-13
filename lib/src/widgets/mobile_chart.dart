@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:candlesticks/candlesticks.dart';
 import 'package:candlesticks/src/constant/view_constants.dart';
 import 'package:candlesticks/src/models/main_window_indicator.dart';
@@ -10,6 +11,7 @@ import 'package:candlesticks/src/widgets/time_row.dart';
 import 'package:candlesticks/src/widgets/top_panel.dart';
 import 'package:candlesticks/src/widgets/volume_widget.dart';
 import 'package:flutter/material.dart';
+
 import 'dash_line.dart';
 
 /// This widget manages gestures
@@ -43,6 +45,7 @@ class MobileChart extends StatefulWidget {
   final ChartAdjust chartAdjust;
 
   final CandleSticksStyle style;
+  final List<LineDrawing> drawing;
 
   final void Function(double) onPanDown;
   final void Function() onPanEnd;
@@ -64,6 +67,7 @@ class MobileChart extends StatefulWidget {
     required this.onReachEnd,
     required this.mainWindowDataContainer,
     required this.onRemoveIndicator,
+    this.drawing = const [],
   });
 
   @override
@@ -215,16 +219,6 @@ class _MobileChartState extends State<MobileChart> {
                                           child: RepaintBoundary(
                                             child: Stack(
                                               children: [
-                                                MainWindowIndicatorWidget(
-                                                  indicatorDatas: widget
-                                                      .mainWindowDataContainer
-                                                      .indicatorComponentData,
-                                                  index: widget.index,
-                                                  candleWidth:
-                                                      widget.candleWidth,
-                                                  low: low,
-                                                  high: high,
-                                                ),
                                                 CandleStickWidget(
                                                   candles: widget.candles,
                                                   candleWidth:
@@ -236,6 +230,18 @@ class _MobileChartState extends State<MobileChart> {
                                                       widget.style.primaryBear,
                                                   bullColor:
                                                       widget.style.primaryBull,
+                                                ),
+                                                MainWindowIndicatorWidget(
+                                                  candles: widget.candles,
+                                                  indicatorDatas: widget
+                                                      .mainWindowDataContainer
+                                                      .indicatorComponentData,
+                                                  drawing: widget.drawing,
+                                                  index: widget.index,
+                                                  candleWidth:
+                                                      widget.candleWidth,
+                                                  low: low,
+                                                  high: high,
                                                 ),
                                               ],
                                             ),
@@ -449,7 +455,8 @@ class _MobileChartState extends State<MobileChart> {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.zero,
-                            primary: widget.style.hoverIndicatorBackgroundColor,
+                            foregroundColor:
+                                widget.style.hoverIndicatorBackgroundColor,
                           ),
                           child: Text(
                             "Auto",

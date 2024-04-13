@@ -44,7 +44,9 @@ class _TopPanelState extends State<TopPanel> {
                     bullColor: widget.style.primaryBull,
                     bearColor: widget.style.primaryBear,
                     defaultStyle: TextStyle(
-                        color: widget.style.borderColor, fontSize: 10),
+                      color: widget.style.borderColor,
+                      fontSize: 14,
+                    ),
                   )
                 : Container(),
           ),

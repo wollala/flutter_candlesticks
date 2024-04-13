@@ -1,13 +1,16 @@
-import 'package:candlesticks/src/models/indicator.dart';
 import 'dart:math' as math;
-import 'candle.dart';
+
+import 'package:candlesticks/src/models/indicator.dart';
 import 'package:flutter/material.dart';
+
+import 'candle.dart';
 
 class IndicatorComponentData {
   final String name;
   final Color color;
   final List<double?> values = [];
   final Indicator parentIndicator;
+
   IndicatorComponentData(this.parentIndicator, this.name, this.color);
   bool visible = true;
 }
