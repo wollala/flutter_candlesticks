@@ -43,6 +43,7 @@ class _TopPanelState extends State<TopPanel> {
                     candle: widget.currentCandle!,
                     bullColor: widget.style.primaryBull,
                     bearColor: widget.style.primaryBear,
+                    backgroundColor: widget.style.background,
                     defaultStyle: TextStyle(
                       color: widget.style.borderColor,
                       fontSize: 14,
