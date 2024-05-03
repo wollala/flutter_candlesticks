@@ -219,15 +219,6 @@ class _DesktopChartState extends State<DesktopChart> {
                                     children: [
                                       Expanded(
                                         child: Container(
-                                          clipBehavior: Clip.hardEdge,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              right: BorderSide(
-                                                color: widget.style.borderColor,
-                                                width: 1,
-                                              ),
-                                            ),
-                                          ),
                                           child: AnimatedPadding(
                                             duration:
                                                 Duration(milliseconds: 300),
@@ -282,14 +273,6 @@ class _DesktopChartState extends State<DesktopChart> {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        right: BorderSide(
-                                          color: widget.style.borderColor,
-                                          width: 1,
-                                        ),
-                                      ),
-                                    ),
                                     child: Padding(
                                       padding: const EdgeInsets.only(top: 10.0),
                                       child: VolumeWidget(
@@ -375,12 +358,12 @@ class _DesktopChartState extends State<DesktopChart> {
                                         style: TextStyle(
                                           color:
                                               widget.style.secondaryTextColor,
-                                          fontSize: 12,
+                                          fontSize: 11,
                                         ),
                                       ),
                                     ),
                                     width: PRICE_BAR_WIDTH,
-                                    height: 20,
+                                    height: 22,
                                   ),
                                 ],
                               ),

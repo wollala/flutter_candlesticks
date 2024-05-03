@@ -56,9 +56,18 @@ class _TopPanelState extends State<TopPanel> {
                   children: widget.indicators
                       .map(
                         (e) => _PanelButton(
+                          style: widget.style,
                           child: Row(
                             children: [
-                              Text(e.name),
+                              Text(
+                                e.name,
+                                style: TextStyle(
+                                    color: widget.unvisibleIndicators
+                                            .contains(e.name)
+                                        ? widget.style.primaryTextColor
+                                            .withOpacity(0.5)
+                                        : widget.style.primaryTextColor),
+                              ),
                               SizedBox(
                                 width: 10,
                               ),
@@ -92,7 +101,6 @@ class _TopPanelState extends State<TopPanel> {
                                   : Container(),
                             ],
                           ),
-                          borderColor: widget.style.borderColor,
                         ),
                       )
                       .toList(),
@@ -106,7 +114,7 @@ class _TopPanelState extends State<TopPanel> {
                     });
                   },
                   child: _PanelButton(
-                    borderColor: widget.style.borderColor,
+                    style: widget.style,
                     child: Row(
                       children: [
                         Icon(
@@ -130,24 +138,25 @@ class _PanelButton extends StatelessWidget {
   const _PanelButton({
     Key? key,
     required this.child,
-    required this.borderColor,
+    required this.style,
   }) : super(key: key);
 
   final Widget child;
-  final Color borderColor;
+  final CandleSticksStyle style;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
         children: [
           Container(
             height: 25,
             padding: EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
+              color: style.background.withOpacity(0.5),
               border: Border.all(
-                color: borderColor,
+                color: style.borderColor,
               ),
               borderRadius: BorderRadius.all(
                 Radius.circular(5),

@@ -1,8 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:candlesticks/src/constant/view_constants.dart';
 import 'package:candlesticks/src/models/candle.dart';
 import 'package:candlesticks/src/models/candle_sticks_style.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 class TimeRow extends StatefulWidget {
   final List<Candle> candles;
@@ -119,7 +120,7 @@ class _TimeRowState extends State<TimeRow> {
                 children: [
                   Expanded(
                     child: Container(
-                      width: 0.05,
+                      width: 0.15,
                       color: widget.style.borderColor,
                     ),
                   ),

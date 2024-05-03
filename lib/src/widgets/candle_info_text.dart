@@ -29,7 +29,7 @@ class CandleInfoText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: backgroundColor,
+      color: backgroundColor.withOpacity(0.7),
       child: RichText(
         text: TextSpan(
           text: dateFormatter(candle.date),

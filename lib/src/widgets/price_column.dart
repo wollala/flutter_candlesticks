@@ -74,7 +74,7 @@ class _PriceColumnState extends State<PriceColumn> {
                         children: [
                           Container(
                             width: widget.width - PRICE_BAR_WIDTH,
-                            height: 0.05,
+                            height: 0.15,
                             color: widget.style.borderColor,
                           ),
                           Expanded(
