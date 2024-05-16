@@ -56,43 +56,36 @@ class _PriceColumnState extends State<PriceColumn> {
       child: AbsorbPointer(
         child: Stack(
           children: [
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
-              top: top,
-              height:
-                  widget.chartHeight + 2 * MAIN_CHART_VERTICAL_PADDING - top,
-              width: widget.width,
-              child: ListView(
-                controller: scrollController,
-                children: List<Widget>.generate(20, (i) {
-                  return AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    height: priceTileHeight,
-                    width: double.infinity,
-                    child: Center(
-                      child: Row(
-                        children: [
-                          Container(
-                            width: widget.width - PRICE_BAR_WIDTH,
-                            height: 0.15,
-                            color: widget.style.borderColor,
-                          ),
-                          Expanded(
-                            child: Text(
-                              "${HelperFunctions.priceToString(newHigh - priceScale * i)}",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: widget.style.primaryTextColor,
-                                fontSize: 11,
-                              ),
+            ListView(
+              controller: scrollController,
+              children: List<Widget>.generate(20, (i) {
+                return AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  height: priceTileHeight,
+                  width: double.infinity,
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: widget.width - PRICE_BAR_WIDTH,
+                          height: 0.15,
+                          color: widget.style.borderColor,
+                        ),
+                        Expanded(
+                          child: Text(
+                            "${HelperFunctions.priceToString(newHigh - priceScale * i)}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: widget.style.primaryTextColor,
+                              fontSize: 11,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                );
+              }).toList(),
             ),
             AnimatedPositioned(
               duration: Duration(milliseconds: 300),
