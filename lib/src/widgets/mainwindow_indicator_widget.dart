@@ -38,10 +38,8 @@ class MainWindowIndicatorWidget extends LeafRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, covariant RenderObject renderObject) {
-    MainWindowIndicatorRenderObject candlestickRenderObject =
-        renderObject as MainWindowIndicatorRenderObject;
+  void updateRenderObject(BuildContext context, covariant RenderObject renderObject) {
+    MainWindowIndicatorRenderObject candlestickRenderObject = renderObject as MainWindowIndicatorRenderObject;
 
     candlestickRenderObject._candles = candles;
     candlestickRenderObject._indicatorDatas = indicatorDatas;
@@ -97,9 +95,7 @@ class MainWindowIndicatorRenderObject extends RenderBox {
       }
       Path? path;
       for (int i = 0; (i + 1) * _candleWidth < size.width; i++) {
-        if (i + _index >= element.values.length ||
-            i + _index < 0 ||
-            element.values[i + _index] == null) continue;
+        if (i + _index >= element.values.length || i + _index < 0 || element.values[i + _index] == null) continue;
 
         if (path == null) {
           path = Path()
@@ -120,17 +116,11 @@ class MainWindowIndicatorRenderObject extends RenderBox {
     });
 
     for (LineDrawing lineDrawing in _drawing) {
-      int startCandleIndex = _candles
-          .indexWhere((element) => element.isContain(lineDrawing.leftX));
-      int endCandleIndex = _candles
-          .indexWhere((element) => element.isContain(lineDrawing.rightX));
+      int startCandleIndex = _candles.indexWhere((element) => element.isContain(lineDrawing.leftX));
+      int endCandleIndex = _candles.indexWhere((element) => element.isContain(lineDrawing.rightX));
 
-      var xlast = size.width +
-          offset.dx -
-          (endCandleIndex - _index + 0.5) * _candleWidth;
-      var xfirst = size.width +
-          offset.dx -
-          (startCandleIndex - _index + 0.5) * _candleWidth;
+      var xlast = size.width + offset.dx - (endCandleIndex - _index + 0.5) * _candleWidth;
+      var xfirst = size.width + offset.dx - (startCandleIndex - _index + 0.5) * _candleWidth;
 
       var ylast = offset.dy + (_high - lineDrawing.rightY) / range;
       var yfirst = offset.dy + (_high - lineDrawing.leftY) / range;
@@ -255,10 +245,8 @@ class MainWindowIndicatorRenderObject extends RenderBox {
           break;
       }
 
-      final textOffset =
-          Offset(horizontalOffset, ylast - textPainter.height / 2);
-      final rect = Rect.fromLTWH(textOffset.dx - 2, textOffset.dy,
-          textPainter.width + 4, textPainter.height);
+      final textOffset = Offset(horizontalOffset, ylast - textPainter.height / 2);
+      final rect = Rect.fromLTWH(textOffset.dx - 2, textOffset.dy, textPainter.width + 4, textPainter.height);
 
       // 사각형 그리기
       context.canvas.drawRect(
