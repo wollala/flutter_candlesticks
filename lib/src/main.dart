@@ -185,13 +185,12 @@ class _CandlesticksState extends State<Candlesticks> {
                     drawing: widget.drawing,
                     chartAdjust: widget.chartAdjust,
                     onScaleUpdate: (double scale) {
-                      print(scale);
                       scale = max(0.90, scale);
                       scale = min(1.1, scale);
                       setState(() {
                         candleWidth *= scale;
-                        candleWidth = min(candleWidth, 70);
-                        candleWidth = max(candleWidth, 0.45);
+                        candleWidth = min(candleWidth, 60);
+                        candleWidth = max(candleWidth, 0.5);
                       });
                     },
                     onPanEnd: () {
