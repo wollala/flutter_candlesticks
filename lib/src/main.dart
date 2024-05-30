@@ -25,7 +25,7 @@ class Candlesticks extends StatefulWidget {
   final List<Candle> candles;
 
   /// This callback calls when the last candle gets visible
-  final Future<bool> Function()? onLoadMoreCandles;
+  final Future<void> Function()? onLoadMoreCandles;
 
   /// List of buttons you what to add on top tool bar
   final List<ToolBarAction> actions;
@@ -211,10 +211,8 @@ class _CandlesticksState extends State<Candlesticks> {
                     onReachEnd: () {
                       if (isCallingLoadMore == false && widget.onLoadMoreCandles != null) {
                         isCallingLoadMore = true;
-                        widget.onLoadMoreCandles!().then((hasMoreData) {
-                          if (!hasMoreData) {
-                            isCallingLoadMore = false;
-                          }
+                        widget.onLoadMoreCandles!().then((_) {
+                          isCallingLoadMore = false;
                         });
                       }
                     },
