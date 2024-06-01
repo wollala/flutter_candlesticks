@@ -59,7 +59,7 @@ class Candlesticks extends StatefulWidget {
     this.onRemoveIndicator,
     this.drawing = const [],
     this.style,
-  })  : assert(candles.length == 0 || candles.length > 1, "Please provide at least 2 candles"),
+  })  : assert(candles.length == 0 || candles.length >= 1, "Please provide at least 1 candles"),
         super(key: key);
 
   @override
